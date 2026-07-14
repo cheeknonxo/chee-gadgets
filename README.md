@@ -4,7 +4,7 @@
 
 ## Overview
 
-It connects gadget resellers to gadget dealers both nationwide and internationally. It also makes it easier for those thet wants to venture into gadget dealership. It restores the lost trust customers have for online vendors and makes it easier to connect a reseller and a dealer.
+Chee Gadgets is a marketplace that connects gadget resellers directly with verified dealers, nationwide and internationally. Dealers list stock (new and tokunbo devices) with clear condition ratings and pricing; resellers browse and order without needing an existing dealer network. Built-in dealer verification and transaction history aim to rebuild the trust that's often missing in informal online gadget trading, and lower the barrier for anyone looking to start reselling.
 
 ## Tech Stack
 
