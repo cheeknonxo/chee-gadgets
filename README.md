@@ -1,10 +1,10 @@
-# [Capstone Project Name]
+# Chee Gadgets
 
-> One-line description of what this project does and who it's for.
+> This project is for buying and selling of gadgets and it is for gadget dealers.
 
 ## Overview
 
-Brief description of the problem this project solves and the core idea behind it.
+It connects gadget resellers to gadget dealers both nationwide and internationally. It also makes it easier for those thet wants to venture into gadget dealership. It restores the lost trust customers have for online vendors and makes it easier to connect a reseller and a dealer.
 
 ## Tech Stack
 

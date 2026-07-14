@@ -4,7 +4,7 @@ Guidance for Claude Code (and any AI pair-programming tool) working in this repo
 
 ## Project
 
-Capstone project for FlyRank.ai internship. [Add 1-2 sentences on what it does.]
+Capstone project for FlyRank.ai internship. It connects gadget resellers to gadget dealers both nationwide and internationally. It is for those interested in venturing into gadget business.
 
 ## Tech Stack
 
