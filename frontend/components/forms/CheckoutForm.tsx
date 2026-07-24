@@ -21,7 +21,7 @@ const schema = z.object({
 // Defined types for form data
 export type FormData = z.infer<typeof schema>;
 interface CheckoutFormProps {
-  setShippingform: React.Dispatch<React.SetStateAction<any>>;
+  setShippingform?: React.Dispatch<React.SetStateAction<any>>;
 }
 const CheckoutForm: React.FC<CheckoutFormProps> = ({ setShippingform }) => {
   const {
@@ -40,7 +40,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ setShippingform }) => {
       ...data,
       date: currentDate,
     };
-    setShippingform(finalData);
+    setShippingform?.(finalData);
     reset();
   };
 
