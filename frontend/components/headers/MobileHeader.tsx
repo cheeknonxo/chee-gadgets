@@ -25,6 +25,7 @@ import { ThemeToggle } from "../theme/ThemeToggle";
 import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const MobileHeader = () => {
   const pathname = usePathname();
@@ -123,10 +124,13 @@ const MobileHeader = () => {
                   </Link>
                 ))}
                 <Separator className="!my-2" />
-                <button className="flex items-start justify-start gap-2 p-2 bg-transparent hover:opacity-50">
-                  <LogOut />
-                  Logout
-                </button>
+                <button
+  onClick={() => signOut({ callbackUrl: "/" })}
+  className="flex items-start justify-start gap-2 p-2 bg-transparent hover:opacity-50"
+>
+  <LogOut />
+  Logout
+</button>
               </ul>
             </SheetDescription>
           </SheetHeader>

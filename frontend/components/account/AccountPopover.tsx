@@ -11,6 +11,7 @@ import { Separator } from "../ui/separator";
 import UserAvatar from "./UserAvatar";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { signOut } from "next-auth/react";
 
 const AccountPopover = () => {
   const pathname = usePathname();
@@ -68,10 +69,13 @@ const AccountPopover = () => {
               </Link>
             ))}
             <Separator className="!my-2" />
-            <button className="flex items-start justify-start gap-2 p-2 bg-transparent hover:opacity-50">
-              <LogOut />
-              Logout
-            </button>
+            <button
+  onClick={() => signOut({ callbackUrl: "/" })}
+  className="flex items-start justify-start gap-2 p-2 bg-transparent hover:opacity-50"
+>
+  <LogOut />
+  Logout
+</button>
           </ul>
         </PopoverContent>
       </Popover>

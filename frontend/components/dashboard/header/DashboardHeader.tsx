@@ -5,6 +5,7 @@ import { Bell, LogOut } from "lucide-react";
 import React from "react";
 import Notification from "../notificaton/Notification";
 import DashboardMobileHeader from "./DashboardMobileHeader";
+import { signOut } from "next-auth/react";
 
 const DashboardHeader = () => {
   return (
@@ -15,12 +16,12 @@ const DashboardHeader = () => {
           <ThemeToggle />
           <Notification />
           <Button
-            size={"sm"}
-            variant={"destructive"}
-            className="flex items-center gap-2"
-          >
-            <LogOut /> Exit
-          </Button>
+  onClick={() => signOut({ callbackUrl: "/" })}
+  variant={"destructive"}
+  className="flex items-center gap-2"
+>
+  <LogOut /> Exit
+</Button>
           <DashboardMobileHeader />
         </div>
       </div>
