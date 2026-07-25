@@ -1,5 +1,5 @@
 'use client';
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { FaGoogle } from "react-icons/fa6";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 // Define Zod schema for form validation
 const signInSchema = z.object({
@@ -26,8 +28,22 @@ const SignInForm = () => {
     resolver: zodResolver(signInSchema),
   });
 
-  const onSubmit = (data: SignInFormData) => {
-    console.log(data); // Handle form submission
+  const router = useRouter();
+  const [error, setError] = useState("");
+
+  const onSubmit = async (data: SignInFormData) => {
+    setError("");
+    const result = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Invalid email or password");
+      return;
+    }
+    router.push("/my-account");
   };
 
   return (
@@ -87,6 +103,7 @@ const SignInForm = () => {
               </p>
             )}
           </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button
             type="submit"
             className="w-full bg-blue-500 dark:bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none"

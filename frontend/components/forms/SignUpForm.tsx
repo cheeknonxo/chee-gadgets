@@ -2,12 +2,14 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FaGoogle } from "react-icons/fa6";
 import { Button } from "../ui/button";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 // Define Zod schema for form validation
 const signUpSchema = z.object({
@@ -29,8 +31,35 @@ const SignUpForm = () => {
     resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log(data); // Handle form submission
+  const router = useRouter();
+  const [error, setError] = useState("");
+
+  const onSubmit = async (data: SignUpFormData) => {
+    setError("");
+    if (data.password !== data.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        role: "BUYER",
+      }),
+    });
+
+    if (!res.ok) {
+      const body = await res.json();
+      setError(body.error || "Something went wrong");
+      return;
+    }
+
+    await signIn("credentials", { email: data.email, password: data.password, redirect: false });
+    router.push("/my-account");
   };
 
   return (
@@ -134,6 +163,7 @@ const SignUpForm = () => {
               </p>
             )}
           </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button
             type="submit"
             className="w-full bg-blue-500 dark:bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none"
