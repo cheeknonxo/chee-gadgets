@@ -1,8 +1,21 @@
 import DashboardHeader from "@/components/dashboard/header/DashboardHeader";
 import DashboardSidebar from "@/components/dashboard/sidebar/DashboardSidebar";
 import React from "react";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const layout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/sign-in");
+  }
+
+  const role = (session.user as any).role;
+  if (role !== "SELLER" && role !== "ADMIN") {
+    redirect("/my-account");
+  }
+
   return (
     <div>
       <DashboardHeader />
