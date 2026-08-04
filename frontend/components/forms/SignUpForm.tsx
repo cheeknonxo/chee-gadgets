@@ -11,12 +11,12 @@ import { Button } from "../ui/button";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-// Define Zod schema for form validation
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Password must be at least 6 characters")
+  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+  role: z.enum(["BUYER", "SELLER"]),
 });
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
@@ -26,9 +26,9 @@ const SignUpForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
+    defaultValues: { role: "BUYER" },
   });
 
   const router = useRouter();
@@ -48,7 +48,7 @@ const SignUpForm = () => {
         email: data.email,
         password: data.password,
         name: data.name,
-        role: "BUYER",
+        role: data.role,
       }),
     });
 
@@ -76,92 +76,71 @@ const SignUpForm = () => {
         </div>
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <Label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
+            <Label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Full Name
             </Label>
             <Input
               type="text"
               id="name"
               placeholder="shohag miah"
-              className={`w-full border ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              } dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none`}
+              className={`w-full border ${errors.name ? "border-red-500" : "border-gray-300"} dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none`}
               {...register("name")}
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.name.message}
-              </p>
-            )}
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
           </div>
           <div>
-            <Label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
+            <Label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Email Address
             </Label>
             <Input
               type="email"
               placeholder="shohag@gmail.com"
               id="email"
-              className={`w-full border ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              } dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none`}
+              className={`w-full border ${errors.email ? "border-red-500" : "border-gray-300"} dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none`}
               {...register("email")}
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
           </div>
           <div>
-            <Label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
+            <Label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Password
             </Label>
             <Input
               type="password"
               id="password"
               placeholder="******"
-              className={`w-full border ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none`}
+              className={`w-full border ${errors.password ? "border-red-500" : "border-gray-300"} dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none`}
               {...register("password")}
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            )}
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
           </div>
           <div>
-            <Label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
+            <Label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Confirm Password
             </Label>
             <Input
               type="password"
               id="confirmPassword"
               placeholder="******"
-              className={`w-full border ${
-                errors.confirmPassword ? "border-red-500" : "border-gray-300"
-              } dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none`}
+              className={`w-full border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"} dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none`}
               {...register("confirmPassword")}
             />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.confirmPassword.message}
-              </p>
-            )}
+            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
+          </div>
+          <div>
+            <Label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              I want to
+            </Label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 border rounded-lg px-4 py-2 flex-1 cursor-pointer dark:border-gray-700">
+                <input type="radio" value="BUYER" {...register("role")} />
+                Buy products
+              </label>
+              <label className="flex items-center gap-2 border rounded-lg px-4 py-2 flex-1 cursor-pointer dark:border-gray-700">
+                <input type="radio" value="SELLER" {...register("role")} />
+                Sell products
+              </label>
+            </div>
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button
