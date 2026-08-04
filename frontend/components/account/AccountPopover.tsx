@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Heart, HelpCircle, ListOrdered, LogOut, User } from "lucide-react";
+import { Heart, HelpCircle, LayoutDashboard, ListOrdered, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
 import UserAvatar from "./UserAvatar";
@@ -16,6 +16,7 @@ import { signOut, useSession } from "next-auth/react";
 const AccountPopover = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  const role = (session?.user as any)?.role;
 
   const userLinks = [
     {
@@ -58,6 +59,17 @@ const AccountPopover = () => {
             <ul className="space-y-1 text-center ">
               <UserAvatar />
               <Separator className="!my-2" />
+              {(role === "SELLER" || role === "ADMIN") && (
+                <Link
+                  href="/dashboard"
+                  className={cn(
+                    "flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-800 p-2 rounded-md font-medium",
+                    pathname.includes("/dashboard") && "bg-gray-200 dark:bg-gray-800"
+                  )}
+                >
+                  <LayoutDashboard /> Seller Dashboard
+                </Link>
+              )}
               {userLinks.map((link) => (
                 <Link
                   key={link.link}
