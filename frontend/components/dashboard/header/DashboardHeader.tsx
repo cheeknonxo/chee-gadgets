@@ -6,7 +6,7 @@ import { Bell, LogOut } from "lucide-react";
 import React from "react";
 import Notification from "../notificaton/Notification";
 import DashboardMobileHeader from "./DashboardMobileHeader";
-import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 const DashboardHeader = () => {
   return (
@@ -16,13 +16,11 @@ const DashboardHeader = () => {
         <div className="flex items-center gap-4">
           <ThemeToggle />
           <Notification />
-          <Button
-  onClick={() => signOut({ callbackUrl: "/" })}
-  variant={"destructive"}
-  className="flex items-center gap-2"
->
-  <LogOut /> Exit
-</Button>
+          <Button asChild variant={"destructive"} className="flex items-center gap-2">
+            <Link href="/">
+              <LogOut /> Exit
+            </Link>
+          </Button>
           <DashboardMobileHeader />
         </div>
       </div>
