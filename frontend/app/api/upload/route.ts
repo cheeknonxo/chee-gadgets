@@ -22,6 +22,7 @@ export async function POST(req: Request) {
     }
 
     const uploadedUrls: string[] = [];
+    const uploadErrors: string[] = [];
 
     for (const file of files) {
       const arrayBuffer = await file.arrayBuffer();
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
 
       if (error) {
         console.error("Supabase upload error:", error);
+        uploadErrors.push(error.message);
         continue;
       }
 
@@ -46,12 +48,16 @@ export async function POST(req: Request) {
     }
 
     if (uploadedUrls.length === 0) {
-      return NextResponse.json({ error: "All uploads failed" }, { status: 500 });
+      return NextResponse.json(
+        { error: `All uploads failed: ${uploadErrors.join("; ")}` },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ urls: uploadedUrls }, { status: 200 });
   } catch (error) {
     console.error("Upload error:", error);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Something went wrong";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
