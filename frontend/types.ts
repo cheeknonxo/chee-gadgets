@@ -1,7 +1,7 @@
 // change or modify the types as your requirement
 
 export type Product = {
-  id: number;
+  id: string;
   name: string;
   category: string;
   description: string;
@@ -20,7 +20,7 @@ export type Review = {
   author: string;
   image: string;
   content: string;
-  rating:number
+  rating: number;
   date: Date;
 };
 

@@ -5,15 +5,13 @@ import { create } from 'zustand';
 interface WishlistState {
   wishlistItems: Product[];
   addToWishlist: (newItem: Product) => void;
-  removeFromWishlist: (itemId: number) => void;
-  isInWishlist: (itemId: number) => boolean;
+  removeFromWishlist: (itemId: string) => void;
+  isInWishlist: (itemId: string) => boolean;
 }
 
 const useWishlistStore = create<WishlistState>((set, get) => {
-  // Check if localStorage is available
   const isLocalStorageAvailable = typeof window !== 'undefined' && window.localStorage;
 
-  // Load wishlist items from localStorage on initialization
   const initialWishlistItems = isLocalStorageAvailable && localStorage.getItem('wishlist-items');
   const parsedWishlistItems: Product[] = initialWishlistItems ? JSON.parse(initialWishlistItems) : [];
 
@@ -30,7 +28,7 @@ const useWishlistStore = create<WishlistState>((set, get) => {
         localStorage.setItem('wishlist-items', JSON.stringify(get().wishlistItems));
       }
     },
-    removeFromWishlist: (itemId: number) => {
+    removeFromWishlist: (itemId: string) => {
       set((state) => ({
         wishlistItems: state.wishlistItems.filter((item) => item.id !== itemId),
       }));
@@ -38,8 +36,7 @@ const useWishlistStore = create<WishlistState>((set, get) => {
         localStorage.setItem('wishlist-items', JSON.stringify(get().wishlistItems));
       }
     },
-    isInWishlist: (itemId: number) => {
-      // Access state through the get function
+    isInWishlist: (itemId: string) => {
       const { wishlistItems } = get();
       return wishlistItems.some((item) => item.id === itemId);
     },

@@ -6,8 +6,8 @@ interface CartState {
   cartItems: CartItem[];
   couponCode: string | null;
   addToCart: (newItem: CartItem) => void;
-  removeFromCart: (itemId: number) => void;
-  updateQuantity: (itemId: number, newQuantity: number) => void;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, newQuantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
@@ -18,12 +18,10 @@ interface CartState {
   removeCoupon: () => void;
 }
 
-
-
 const STORAGE_KEY = "cart-items";
 
 const useCartStore = create<CartState>((set) => {
-  
+
   const isLocalStorageAvailable = typeof window !== "undefined" && window.localStorage;
 
   const initialCartItems = isLocalStorageAvailable && localStorage.getItem(STORAGE_KEY);
@@ -33,7 +31,7 @@ const useCartStore = create<CartState>((set) => {
     cartItems: parsedCartItems,
 
     couponCode: null,
-    
+
     addToCart: (newItem: CartItem): void => {
       set((state) => {
         const existingItem = state.cartItems.find((item) => item.id === newItem.id);
@@ -48,14 +46,14 @@ const useCartStore = create<CartState>((set) => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(useCartStore.getState().cartItems));
     },
 
-    removeFromCart: (itemId: number): void => {
+    removeFromCart: (itemId: string): void => {
       set((state) => ({
         cartItems: state.cartItems.filter((item) => item.id !== itemId),
       }));
       localStorage.setItem(STORAGE_KEY, JSON.stringify(useCartStore.getState().cartItems));
     },
 
-    updateQuantity: (itemId: number, newQuantity: number): void => {
+    updateQuantity: (itemId: string, newQuantity: number): void => {
       set((state) => ({
         cartItems: state.cartItems.map((item) =>
           item.id === itemId ? { ...item, quantity: newQuantity } : item
@@ -78,24 +76,20 @@ const useCartStore = create<CartState>((set) => {
         .getState()
         .cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-      // Apply coupon code discount if available
       const couponCode = useCartStore.getState().couponCode;
       if (couponCode === "YOUR_COUPON_CODE") {
-        // Example: Apply 10% discount
-        totalPrice *= 0.9; // 10% discount
+        totalPrice *= 0.9;
       }
 
       return totalPrice;
     },
 
     getTax: (): number => {
-      // Calculate tax based on the total price (Example: 10% tax)
-      return useCartStore.getState().getTotalPrice() * 0.1; // 10% tax
+      return useCartStore.getState().getTotalPrice() * 0.1;
     },
-    
+
     getShippingFee: (): number => {
-      // Calculate shipping fee based on the total price (Example: $5 flat rate)
-      return 5; // $5 flat rate
+      return 5;
     },
 
     getTotalAmount: (): number => {
@@ -109,7 +103,7 @@ const useCartStore = create<CartState>((set) => {
     applyCoupon: (code: string): void => {
       set({ couponCode: code });
     },
-    
+
     removeCoupon: (): void => {
       set({ couponCode: null });
     },
