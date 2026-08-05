@@ -25,6 +25,7 @@ export const productsData = [
     ],
     brand: "Apple",
     color: ['white', 'gray', 'blue','silver'],
+    sellerId: "demo-seller",
     images: [
       "/images/products/apple-watch-9-removebg-preview.png",
       "/images/products/apple-watch-9-3-removebg-preview.png",
@@ -57,6 +58,7 @@ export const productsData = [
         date: new Date(),
       },
     ],
+    sellerId: "demo-seller",
     images: [
       "/images/products/apple-watch-se-removebg-preview.png",
       "/images/products/apple-watch-se-2-removebg-preview.png",
@@ -89,6 +91,7 @@ export const productsData = [
       },
     ],
     discount: 10,
+    sellerId: "demo-seller",
     images: [
       "/images/products/firebolt-ninja-removebg-preview.png"
     ],
@@ -118,6 +121,7 @@ export const productsData = [
     ],
     brand: "none",
     color: ['white', 'gray', 'blue'],
+    sellerId: "demo-seller",
     images: [
       "/images/products/galaxy-watch-4-removebg-preview.png",
       "/images/products/galaxy-watch-4-2-removebg-preview.png",
@@ -150,6 +154,7 @@ export const productsData = [
         date: new Date(),
       },
     ],
+    sellerId: "demo-seller",
     images: [
       "/images/products/asus-vivobook-removebg-preview.png",
       "/images/products/asus-vivobook-2-removebg-preview.png",
@@ -182,6 +187,7 @@ export const productsData = [
       },
     ],
     discount: 10,
+    sellerId: "demo-seller",
     images: [
       "/images/products/dell-gaming-removebg-preview.png"
     ],
@@ -213,6 +219,7 @@ export const productsData = [
       },
     ],
     discount: 5,
+    sellerId: "demo-seller",
     images: [
       "/images/products/lenova-removebg-preview.png",
       '/images/products/lenova-2-removebg-preview.png'
@@ -245,6 +252,7 @@ export const productsData = [
       },
     ],
     discount: 6,
+    sellerId: "demo-seller",
     images: [
       "/images/products/msi-modern-14-removebg-preview.png",
       '/images/products/msi-modern-14-2-removebg-preview.png',
@@ -278,6 +286,7 @@ export const productsData = [
       },
     ],
     discount: 15,
+    sellerId: "demo-seller",
     images: [
       "/images/products/sony-dynamic-removebg-preview.png",
       '/images/products/sony-dynamic-2-removebg-preview.png',
@@ -310,6 +319,7 @@ export const productsData = [
       },
     ],
     discount: 5,
+    sellerId: "demo-seller",
     images: [
       "/images/products/song-wh-removebg-preview.png",
     ],
@@ -341,6 +351,7 @@ export const productsData = [
       },
     ],
     discount: 12,
+    sellerId: "demo-seller",
     images: [
       "/images/products/senheiser-removebg-preview.png",
     ],
@@ -372,6 +383,7 @@ export const productsData = [
       },
     ],
     discount: 12,
+    sellerId: "demo-seller",
     images: [
       "/images/products/prothonics-removebg-preview.png",
     ],
@@ -403,6 +415,7 @@ export const productsData = [
       },
     ],
     discount: 12,
+    sellerId: "demo-seller",
     images: [
       "/images/products/peco-m6-removebg-preview.png",
       '/images/products/peco-m6-2-removebg-preview.png'
@@ -435,6 +448,7 @@ export const productsData = [
       },
     ],
     discount: 12,
+    sellerId: "demo-seller",
     images: [
       "/images/products/readme-13-c-removebg-preview.png",
       '/images/products/readme-13c-2-removebg-preview.png'
@@ -467,6 +481,7 @@ export const productsData = [
       },
     ],
     discount: 5,
+    sellerId: "demo-seller",
     images: [
       "/images/products/lava_agni-removebg-preview.png",
     ],
@@ -498,6 +513,7 @@ export const productsData = [
       },
     ],
     discount: 5,
+    sellerId: "demo-seller",
     images: [
       "/images/products/galaxy-15-removebg-preview.png",
     ],

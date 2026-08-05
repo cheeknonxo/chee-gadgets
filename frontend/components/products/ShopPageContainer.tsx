@@ -47,6 +47,7 @@ const ShopPageContainer = ({
           color: p.color,
           stockItems: p.stockItems,
           images: p.images,
+          sellerId: p.sellerId,
         }));
         setAllProducts(mapped);
       } catch (err) {

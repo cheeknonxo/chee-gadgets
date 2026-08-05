@@ -37,26 +37,30 @@ const OrderSummaryForCheckout = ({ shippingform }: any) => {
 
   const submitOrder = async (customerOrder: any) => {
     try {
-      const response = await fetch("http://localhost:4000/api/checkout", {
+      const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(customerOrder),
+        body: JSON.stringify({
+          cartItems: customerOrder.cartItems,
+          shippingForm: customerOrder.shippingForm,
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to place order");
+        throw new Error(errorData.error || "Failed to place order");
       }
 
       const data = await response.json();
       console.log("Order placed successfully:", data);
-      toast.success("Order placed successfully")
+      toast.success("Order placed successfully");
       clearCart();
       router.push("/");
     } catch (error: any) {
       console.error("Error submitting order:", error.message);
+      toast.error(error.message || "Failed to place order");
     }
   };
 

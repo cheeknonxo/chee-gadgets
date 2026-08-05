@@ -14,6 +14,7 @@ export type Product = {
   color?: string[];
   stockItems: number;
   images: string[];
+  sellerId: string;
 };
 
 export type Review = {

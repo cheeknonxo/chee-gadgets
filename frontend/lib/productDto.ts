@@ -16,5 +16,6 @@ export function toProductDTO(product: PrismaProduct): Product {
     color: product.color,
     stockItems: product.stockItems,
     images: product.images,
+    sellerId: product.sellerId,
   };
 }

@@ -29,6 +29,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   products      Product[]
+  buyerOrders  Order[] @relation("BuyerOrders")
+  sellerOrders Order[] @relation("SellerOrders")
   createdAt     DateTime  @default(now())
 }
 
@@ -50,6 +52,7 @@ model Product {
   sellerId    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  orderItems  OrderItem[]
 }
 
 model Account {
@@ -84,4 +87,48 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  buyer        User        @relation("BuyerOrders", fields: [buyerId], references: [id])
+  buyerId      String
+  seller       User        @relation("SellerOrders", fields: [sellerId], references: [id])
+  sellerId     String
+  status       OrderStatus @default(PENDING)
+  subtotal     Decimal     @db.Decimal(10, 2)
+  shippingFee  Decimal     @db.Decimal(10, 2)
+  tax          Decimal     @db.Decimal(10, 2)
+  total        Decimal     @db.Decimal(10, 2)
+  currency     String      @default("USD")
+  firstName    String
+  lastName     String
+  address      String
+  city         String
+  zip          String
+  country      String
+  phone        String
+  items        OrderItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  name      String
+  image     String?
+  price     Decimal @db.Decimal(10, 2)
+  quantity  Int
 }
