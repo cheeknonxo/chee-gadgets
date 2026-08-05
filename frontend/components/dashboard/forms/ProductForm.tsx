@@ -15,7 +15,6 @@ const productSchema = z.object({
   brand: z.string().optional(),
   description: z.string().min(1, "Description is required"),
   aboutItem: z.string().optional(),
-  images: z.string().min(1, "At least one image URL is required"),
   color: z.string().optional(),
   discount: z.string().optional(),
 });
@@ -26,6 +25,7 @@ const ProductForm = () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
 
   const {
     handleSubmit,
@@ -38,7 +38,30 @@ const ProductForm = () => {
 
   const onSubmit = async (data: ProductFormData) => {
     setError("");
+
+    if (!imageFiles || imageFiles.length === 0) {
+      setError("Please select at least one image");
+      return;
+    }
+
     setSubmitting(true);
+
+    const uploadFormData = new FormData();
+    Array.from(imageFiles).forEach((file) => uploadFormData.append("images", file));
+
+    const uploadRes = await fetch("/api/upload", {
+      method: "POST",
+      body: uploadFormData,
+    });
+
+    if (!uploadRes.ok) {
+      const body = await uploadRes.json();
+      setError(body.error || "Image upload failed");
+      setSubmitting(false);
+      return;
+    }
+
+    const { urls } = await uploadRes.json();
 
     const res = await fetch("/api/products", {
       method: "POST",
@@ -52,7 +75,7 @@ const ProductForm = () => {
         brand: data.brand,
         category: data.category,
         color: data.color ? data.color.split(",").map((c) => c.trim()).filter(Boolean) : [],
-        images: data.images.split(",").map((i) => i.trim()).filter(Boolean),
+        images: urls,
       }),
     });
 
@@ -65,6 +88,7 @@ const ProductForm = () => {
     }
 
     reset();
+    setImageFiles(null);
     router.push("/dashboard/products");
   };
 
@@ -143,20 +167,26 @@ const ProductForm = () => {
 
         <div className="lg:col-span-2">
           <Label htmlFor="images" className="block text-sm font-medium text-gray-700 dark:text-white">
-            Image URLs (comma separated)
+            Product Images
           </Label>
           <p className="text-gray-500 text-sm mb-1">
-            Paste direct links to product images. File upload isn&apos;t wired up yet, so use hosted image URLs for now.
+            You can select multiple images. They&apos;ll be uploaded when you submit.
           </p>
-          <Input id="images" type="text" placeholder="https://example.com/img1.png, https://example.com/img2.png" className="mt-1 p-2 block w-full rounded-md border-gray-300 dark:border-gray-600" {...register("images")} />
-          {errors.images && <span className="text-red-500">{errors.images.message}</span>}
+          <Input
+            id="images"
+            type="file"
+            accept="image/*"
+            multiple
+            className="mt-1 p-2 block w-full rounded-md border-gray-300 dark:border-gray-600"
+            onChange={(e) => setImageFiles(e.target.files)}
+          />
         </div>
 
         {error && <p className="text-red-500 lg:col-span-2">{error}</p>}
 
         <div>
           <Button type="submit" disabled={submitting}>
-            {submitting ? "Saving..." : "Submit"}
+            {submitting ? "Uploading & Saving..." : "Submit"}
           </Button>
         </div>
       </form>
