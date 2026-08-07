@@ -60,7 +60,7 @@ const ProductsPage = async () => {
                   <td className="px-6 py-4 whitespace-nowrap">{product.category}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{product.stockItems}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <ProductActions />
+                    <ProductActions productId={product.id} />
                   </td>
                 </tr>
               ))}

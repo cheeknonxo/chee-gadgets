@@ -1,30 +1,54 @@
-import React from "react";
-import ProductGallery from "@/components/product/ProductGallery";
-import ProductDetails from "@/components/product/ProductDetails";
-import { productsData } from "@/data/products/productsData";
 import BreadcrumbComponent from "@/components/others/Breadcrumb";
+import EditProductForm from "@/components/dashboard/forms/EditProductForm";
+import React from "react";
+import { redirect, notFound } from "next/navigation";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
-const ProductDetailsPage = () => {
-  // get product data here based on params
+interface EditProductPageProps {
+  params: { productId: string };
+}
 
-  const product = productsData[0];
+const EditProductPage = async ({ params }: EditProductPageProps) => {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/sign-in");
+  }
+
+  const product = await prisma.product.findUnique({
+    where: { id: params.productId },
+  });
+
+  if (!product) {
+    notFound();
+  }
+
+  const userId = (session.user as any).id;
+  const role = (session.user as any).role;
+  if (product.sellerId !== userId && role !== "ADMIN") {
+    redirect("/dashboard/products");
+  }
 
   return (
-    <div className="max-w-screen-xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-      <div className="py-2">
-        <BreadcrumbComponent
-          links={["/dashboard", "/products"]}
-          pageText={product.name}
-        />
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:gap-8">
-        {/* Product Gallery */}
-        <ProductGallery isInModal={false} images={product?.images!} />
-        {/* product details */}
-        <ProductDetails product={product!} />
-      </div>
+    <div className="p-2 w-full">
+      <BreadcrumbComponent links={["/dashboard", "/products"]} pageText="edit product" />
+      <EditProductForm
+        productId={product.id}
+        initialData={{
+          name: product.name,
+          price: product.price.toString(),
+          category: product.category,
+          brand: product.brand || "",
+          description: product.description,
+          aboutItem: product.aboutItem.join("\n"),
+          color: product.color.join(", "),
+          discount: product.discount.toString(),
+          stockItems: product.stockItems.toString(),
+          images: product.images,
+        }}
+      />
     </div>
   );
 };
 
-export default ProductDetailsPage;
+export default EditProductPage;
