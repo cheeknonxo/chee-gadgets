@@ -34,45 +34,69 @@ export async function POST(req: Request) {
     }
 
     const buyerId = (session.user as any).id;
-    const createdOrders = [];
 
-    for (const sellerId of Object.keys(groupedBySeller)) {
-      const items = groupedBySeller[sellerId];
-      const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const shippingFee = 5;
-      const tax = subtotal * 0.1;
-      const total = subtotal + shippingFee + tax;
+    const createdOrders = await prisma.$transaction(async (tx) => {
+      for (const item of cartItems) {
+        const product = await tx.product.findUnique({ where: { id: item.id } });
+        if (!product) {
+          throw new Error(`Product "${item.name}" no longer exists`);
+        }
+        if (product.stockItems < item.quantity) {
+          throw new Error(
+            `Not enough stock for "${item.name}" — only ${product.stockItems} left`
+          );
+        }
+      }
 
-      const order = await prisma.order.create({
-        data: {
-          buyerId,
-          sellerId,
-          subtotal,
-          shippingFee,
-          tax,
-          total,
-          firstName,
-          lastName,
-          address,
-          city,
-          zip,
-          country,
-          phone,
-          items: {
-            create: items.map((item) => ({
-              productId: item.id,
-              name: item.name,
-              image: item.images?.[0] || null,
-              price: item.price,
-              quantity: item.quantity,
-            })),
+      const orders = [];
+
+      for (const sellerId of Object.keys(groupedBySeller)) {
+        const items = groupedBySeller[sellerId];
+        const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const shippingFee = 5;
+        const tax = subtotal * 0.1;
+        const total = subtotal + shippingFee + tax;
+
+        const order = await tx.order.create({
+          data: {
+            buyerId,
+            sellerId,
+            subtotal,
+            shippingFee,
+            tax,
+            total,
+            firstName,
+            lastName,
+            address,
+            city,
+            zip,
+            country,
+            phone,
+            items: {
+              create: items.map((item) => ({
+                productId: item.id,
+                name: item.name,
+                image: item.images?.[0] || null,
+                price: item.price,
+                quantity: item.quantity,
+              })),
+            },
           },
-        },
-        include: { items: true },
-      });
+          include: { items: true },
+        });
 
-      createdOrders.push(order);
-    }
+        for (const item of items) {
+          await tx.product.update({
+            where: { id: item.id },
+            data: { stockItems: { decrement: item.quantity } },
+          });
+        }
+
+        orders.push(order);
+      }
+
+      return orders;
+    });
 
     return NextResponse.json({ orders: createdOrders }, { status: 201 });
   } catch (error) {

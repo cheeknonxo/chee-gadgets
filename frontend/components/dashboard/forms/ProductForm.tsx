@@ -17,6 +17,7 @@ const productSchema = z.object({
   aboutItem: z.string().optional(),
   color: z.string().optional(),
   discount: z.string().optional(),
+  stockItems: z.string().min(1, "Stock quantity is required"),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
@@ -72,6 +73,7 @@ const ProductForm = () => {
         aboutItem: data.aboutItem ? data.aboutItem.split("\n").filter(Boolean) : [],
         price: Number(data.price),
         discount: data.discount ? Number(data.discount) : 0,
+        stockItems: Number(data.stockItems),
         brand: data.brand,
         category: data.category,
         color: data.color ? data.color.split(",").map((c) => c.trim()).filter(Boolean) : [],
@@ -123,6 +125,14 @@ const ProductForm = () => {
           </Label>
           <Input id="discount" type="text" className="mt-1 p-2 block w-full rounded-md border-gray-300 dark:border-gray-600" {...register("discount")} />
           {errors.discount && <span className="text-red-500">{errors.discount.message}</span>}
+        </div>
+
+        <div>
+          <Label htmlFor="stockItems" className="block text-sm font-medium text-gray-700 dark:text-white">
+            Stock Quantity
+          </Label>
+          <Input id="stockItems" type="text" className="mt-1 p-2 block w-full rounded-md border-gray-300 dark:border-gray-600" {...register("stockItems")} />
+          {errors.stockItems && <span className="text-red-500">{errors.stockItems.message}</span>}
         </div>
 
         <div>

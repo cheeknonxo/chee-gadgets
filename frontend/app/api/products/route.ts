@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { name, description, aboutItem, price, discount, brand, category, color, images } = body;
+    const { name, description, aboutItem, price, discount, brand, category, color, images, stockItems } = body;
 
     if (!name || !description || !price || !category) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
         aboutItem: Array.isArray(aboutItem) ? aboutItem : [],
         price,
         discount: discount ? Number(discount) : 0,
+        stockItems: stockItems ? Number(stockItems) : 0,
         brand,
         category,
         color: Array.isArray(color) ? color : [],
