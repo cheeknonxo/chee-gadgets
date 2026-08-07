@@ -1,6 +1,8 @@
 import HomePageOne from "@/components/pages/home-pages/HomePageOne";
 import HomePageTwo from "@/components/pages/home-pages/HomePageTwo";
 
+export const dynamic = "force-dynamic";
+
 export default  function Home() {
 
 
