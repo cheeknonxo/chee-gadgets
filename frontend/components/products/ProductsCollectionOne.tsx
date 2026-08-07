@@ -1,23 +1,15 @@
-"use client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { productsData } from "@/data/products/productsData";
-
-import React, { useEffect, useState } from "react";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import React from "react";
 import SingleProductCartView from "../product/SingleProductCartView";
+import { prisma } from "@/lib/prisma";
+import { toProductDTO } from "@/lib/productDto";
 
-const ProductsCollectionOne = () => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  //get products data from server here based on the category or tab value
-  const data = productsData;
-
-  if (!isMounted) {
-    return null;
-  }
+const ProductsCollectionOne = async () => {
+  const rows = await prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 8,
+  });
+  const data = rows.map(toProductDTO);
 
   return (
     <section className="max-w-screen-xl mx-auto py-16 px-4 md:px-8 w-full">
@@ -29,29 +21,29 @@ const ProductsCollectionOne = () => {
         </div>
         <TabsContent value="top-rated" className="w-full">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
-            {data?.slice(0, 8)?.map((product) => {
-              return (
+            {data.length === 0 ? (
+              <p className="text-gray-500 dark:text-gray-400 italic col-span-full text-center py-8">
+                No products yet.
+              </p>
+            ) : (
+              data.map((product) => (
                 <SingleProductCartView key={product.id} product={product} />
-              );
-            })}
+              ))
+            )}
           </div>
         </TabsContent>
         <TabsContent value="most-popular">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {data?.slice(0, 8)?.map((product) => {
-              return (
-                <SingleProductCartView key={product.id} product={product} />
-              );
-            })}
+            {data.map((product) => (
+              <SingleProductCartView key={product.id} product={product} />
+            ))}
           </div>
         </TabsContent>
         <TabsContent value="new-items">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {data?.slice(0, 8)?.map((product) => {
-              return (
-                <SingleProductCartView key={product.id} product={product} />
-              );
-            })}
+            {data.map((product) => (
+              <SingleProductCartView key={product.id} product={product} />
+            ))}
           </div>
         </TabsContent>
       </Tabs>
