@@ -22,7 +22,7 @@ const SingleProductListView = ({ product }: { product: Product }) => {
       <div className="flex-shrink-0 w-[20rem] h-[18rem] relative rounded-md overflow-hidden bg-gray-200">
         <Image src={images[0]} alt={name} fill className="object-contain" />
       </div>
-      <div className="">
+      <div className="flex-1 min-w-0">
         <p className="text-sm text-sky-500 font-light">{category}</p>
         <div className="flex items-center justify-between">
           <h3 className="text-2xl font-bold hover:text-green-500">
