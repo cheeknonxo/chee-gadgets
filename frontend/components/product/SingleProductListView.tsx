@@ -9,7 +9,7 @@ import { Product } from "@/types";
 import { calculateDiscount } from "@/lib/calculateDiscount";
 
 const SingleProductListView = ({ product }: { product: Product }) => {
-  const { category, discount, id, images, name, price, rating, reviews } =
+  const { category, discount, id, images, name, price, rating, reviews, description } =
     product;
 
   const discountPrice = calculateDiscount(price, discount);
@@ -37,11 +37,9 @@ const SingleProductListView = ({ product }: { product: Product }) => {
             ${discountPrice}
           </span>
         </div>
-        <div className=" text-sm">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis numquam
-          consequatur, corporis magnam quibusdam quae minima quidem. Quis
-          nostrum laboriosam libero culpa expedita a repellendus, officiis,
-          saepe, deleniti quia reiciendis.
+        <div className="text-sm">
+          {description.slice(0, 200)}
+          {description.length > 200 && "..."}
         </div>
         <div
           className="flex flex-col md:flex-row mt-4 items-center gap-2 max-w-96 ml-auto justify-end"
