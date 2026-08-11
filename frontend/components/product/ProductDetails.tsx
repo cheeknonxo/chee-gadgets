@@ -81,7 +81,12 @@ const ProductDetails = ({ product }: { product: Product }) => {
       {/* Separator */}
       <Separator className="!mt-4" />
       {/* Product Tab */}
-      <ProductTab aboutItem={product?.aboutItem!} reviews={product?.reviews} />
+      <ProductTab
+        aboutItem={product?.aboutItem!}
+        reviews={product?.reviews}
+        productId={product.id}
+        canReview={(product as any).canReview}
+      />
     </div>
   );
 };

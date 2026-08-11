@@ -126,6 +126,8 @@ const ProductQuickViewModal = () => {
                   <ProductTab
                     aboutItem={product?.aboutItem!}
                     reviews={product.reviews}
+                    productId={product.id}
+                    canReview={false}
                   />
                 </div>
               </div>

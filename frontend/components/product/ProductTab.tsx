@@ -3,13 +3,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Review } from "@/types";
 import Image from "next/image";
 import { Star } from "lucide-react";
+import ReviewForm from "./ReviewForm";
 
 interface ProductTabsProps {
   aboutItem: string[];
   reviews?: Review[];
+  productId: string;
+  canReview?: boolean;
 }
 
-const ProductTab = ({ aboutItem = [], reviews = [] }: ProductTabsProps) => {
+const ProductTab = ({ aboutItem = [], reviews = [], productId, canReview = false }: ProductTabsProps) => {
   return (
     <div>
       <Tabs defaultValue="aboutitem" className="w-full p-4 -mt-2 ">
@@ -27,6 +30,7 @@ const ProductTab = ({ aboutItem = [], reviews = [] }: ProductTabsProps) => {
           </div>
         </TabsContent>
         <TabsContent value="reviews">
+          {canReview && <ReviewForm productId={productId} />}
           {reviews?.length === 0 ? (
             <div>No Review Found For This Product</div>
           ) : (
@@ -51,7 +55,7 @@ const ProductTab = ({ aboutItem = [], reviews = [] }: ProductTabsProps) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Image
-                      src={review.image || ""}
+                      src={review.image || "/images/people/person.jpg"}
                       alt="person"
                       width={48}
                       height={48}

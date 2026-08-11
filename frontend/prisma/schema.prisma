@@ -29,6 +29,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   products      Product[]
+  reviews Review[]
   buyerOrders  Order[] @relation("BuyerOrders")
   sellerOrders Order[] @relation("SellerOrders")
   createdAt     DateTime  @default(now())
@@ -53,6 +54,8 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   orderItems  OrderItem[]
+  reviews     Review[]
+  reviewCount Int      @default(0)
 }
 
 model Account {
@@ -131,4 +134,17 @@ model OrderItem {
   image     String?
   price     Decimal @db.Decimal(10, 2)
   quantity  Int
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  rating    Int
+  content   String
+  createdAt DateTime @default(now())
+
+  @@unique([productId, authorId])
 }

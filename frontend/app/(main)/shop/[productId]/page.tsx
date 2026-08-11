@@ -6,12 +6,16 @@ import ProductDetails from "@/components/product/ProductDetails";
 import { prisma } from "@/lib/prisma";
 import { toProductDTO } from "@/lib/productDto";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 
 interface ProductIdPageProps {
   params: { productId: string };
 }
 
 const ProductIdPage = async ({ params }: ProductIdPageProps) => {
+  const session = await auth();
+  const userId = (session?.user as any)?.id;
+
   const productRow = await prisma.product.findUnique({
     where: { id: params.productId },
   });
@@ -20,7 +24,35 @@ const ProductIdPage = async ({ params }: ProductIdPageProps) => {
     notFound();
   }
 
-  const product = toProductDTO(productRow);
+  const reviewRows = await prisma.review.findMany({
+    where: { productId: params.productId },
+    include: { author: { select: { name: true, image: true } } },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const reviews = reviewRows.map((r) => ({
+    author: r.author.name || "Anonymous",
+    image: r.author.image || "",
+    content: r.content,
+    rating: r.rating,
+    date: r.createdAt,
+  }));
+
+  let canReview = false;
+  if (userId) {
+    const hasOrdered = await prisma.orderItem.findFirst({
+      where: {
+        productId: params.productId,
+        order: { buyerId: userId },
+      },
+    });
+    const alreadyReviewed = await prisma.review.findUnique({
+      where: { productId_authorId: { productId: params.productId, authorId: userId } },
+    });
+    canReview = !!hasOrdered && !alreadyReviewed;
+  }
+
+  const product = { ...toProductDTO(productRow), reviews, canReview };
 
   const relatedRows = await prisma.product.findMany({
     where: {
